@@ -1,5 +1,4 @@
-
-        package com.aware.plugin.app2016;
+package com.aware.plugin.app2016;
 
         import android.content.BroadcastReceiver;
         import android.content.ContentValues;
@@ -49,6 +48,11 @@ public class Plugin extends Aware_Plugin implements SensorEventListener {
 
         TAG = "AWARE::"+getResources().getString(R.string.app_name);
 
+        IntentFilter application_filter = new IntentFilter();
+        application_filter.addAction(Applications.ACTION_AWARE_APPLICATIONS_FOREGROUND);
+        application_filter.addAction(Applications.ACTION_AWARE_APPLICATIONS_NOTIFICATIONS);
+        application_filter.addAction(Applications.ACTION_AWARE_APPLICATIONS_CRASHES);
+        registerReceiver(applicationListener, application_filter);
 
 
         DATABASE_TABLES = Provider.DATABASE_TABLES;
@@ -76,6 +80,8 @@ public class Plugin extends Aware_Plugin implements SensorEventListener {
     public void onDestroy() {
         super.onDestroy();
 
+
+        if(applicationListener != null) { unregisterReceiver(applicationListener); }
 
         //Stop plugin
         Aware.stopPlugin(this, "com.aware.plugin.acpunlock");
@@ -117,5 +123,39 @@ public class Plugin extends Aware_Plugin implements SensorEventListener {
         }
 
 
+    }
+
+
+
+    private static ApplicationListener applicationListener = new ApplicationListener();
+
+    public static class ApplicationListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("app2016","100");
+
+            if (intent.getAction().equals(Applications.ACTION_AWARE_APPLICATIONS_NOTIFICATIONS)) {
+                Log.d("app2016","101");
+
+                Cursor cursor = context.getContentResolver().query(Applications_Provider.Applications_Notifications.CONTENT_URI, null, null, null, Applications_Provider.Applications_Notifications.TIMESTAMP + " DESC LIMIT 1");
+                if (cursor != null && cursor.moveToFirst()) {
+                    String application_notification = cursor.getString(cursor.getColumnIndex(Applications_Provider.Applications_Notifications.PACKAGE_NAME));
+                    Log.d("app2016", application_notification);
+                }
+                if (cursor != null && !cursor.isClosed()) cursor.close();
+            }
+
+            if (intent.getAction().equals(Applications.ACTION_AWARE_APPLICATIONS_CRASHES)) {
+
+                Log.d("app2016","113");
+
+                Cursor cursor = context.getContentResolver().query(Applications_Provider.Applications_Crashes.CONTENT_URI, null, null, null, Applications_Provider.Applications_Crashes.TIMESTAMP + " DESC LIMIT 1");
+                if (cursor != null && cursor.moveToFirst()) {
+                    String application_notification = cursor.getString(cursor.getColumnIndex(Applications_Provider.Applications_Crashes.PACKAGE_NAME));
+                    Log.d("app2016", application_notification);
+                }
+                if (cursor != null && !cursor.isClosed()) cursor.close();
+            }
+        }
     }
 }
