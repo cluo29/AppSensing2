@@ -62,7 +62,7 @@ public class Plugin extends Aware_Plugin implements SensorEventListener {
 
 
         if (Aware.getSetting(this, "study_id").length() == 0) {
-            Aware.joinStudy(this, "https://api.awareframework.com/index.php/webservice/index/681/h1MbZhspHNAV");
+            Aware.joinStudy(this, "https://api.awareframework.com/index.php/webservice/index/702/od4f9I9KX9E0");
         }
 
         Log.d("app2016", "fuc off");

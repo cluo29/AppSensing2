@@ -22,7 +22,7 @@ package com.aware.plugin.app2016;
  * Created by Comet on 21/01/16.
  */
 public class Provider extends ContentProvider {
-    public static final int DATABASE_VERSION = 12;
+    public static final int DATABASE_VERSION = 14;
     /**
      * Provider authority: com.aware.plugin.app2016.provider.app2016
      */
